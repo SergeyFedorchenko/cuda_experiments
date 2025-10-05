@@ -51,7 +51,7 @@ __global__ void gemm_tiled(const float* __restrict__ A,
     Bs[threadIdx.y][threadIdx.x] = (b_row < K && col < N) ? B[b_row*N + col] : 0.f;
     __syncthreads();
 
-    #pragma unroll
+    #pragma unroll 16
     for (int k=0;k<BLOCK;++k)
       acc += As[threadIdx.y][k] * Bs[k][threadIdx.x];
     __syncthreads();
@@ -108,6 +108,8 @@ int main(int argc, char** argv) {
   gemm_naive<<<grid,block>>>(dA,dB,dC,M,N,K);
   CUDA_OK(cudaEventRecord(e1));
   CUDA_OK(cudaEventSynchronize(e1));
+  printf("Grid: (%d, %d), Block: (%d, %d)\n", grid.x, grid.y, block.x, block.y);
+
   float naive_ms=0; CUDA_OK(cudaEventElapsedTime(&naive_ms,s1,e1));
 
   // Measure tiled

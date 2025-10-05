@@ -16,10 +16,15 @@ $(BIN): $(SRC)
 	@mkdir -p build
 	$(NVCC) $(CXXFLAGS) $(NVFLAGS) -DBLOCK=$(BLOCK) -o $@ $<
 
+
 run: $(BIN)
-	@SIZE ?= 1024; \
-	SKIP_CPU ?= 0; \
-	$(BIN) $$SIZE $$SIZE $$SIZE $$SKIP_CPU
+	@$(BIN) $(SIZE) $(SIZE) $(SIZE) $(SKIP_CPU)
+
+
+#run: $(BIN)
+#	@SIZE ?= 1024; \
+#	SKIP_CPU ?= 0; \
+#	$(BIN) $$SIZE $$SIZE $$SIZE $$SKIP_CPU
 
 clean:
 	rm -rf build
